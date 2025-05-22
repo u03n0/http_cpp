@@ -3,15 +3,25 @@ add_library(socket_data
     socket/socket.cpp
 )
 
-# Link dependencies
-target_link_libraries(socket_data)
-#target_link_libraries(models_bayesian PRIVATE core_data)
-#target_link_libraries(models_knn PRIVATE core_data)
+add_library(request_data
+  request/send_request.cpp
+  request/receive_request.cpp
+)
 
-# Create the main executable for the naive bayes example
-#add_executable(naive_bayes_app models/bayesian/main.cpp)
-#add_executable(knn_app models/knn/main.cpp)
+add_library(processing_data
+  processing/processing.cpp
+)
+
+target_link_libraries(socket_data)
+target_link_libraries(request_data)
+target_link_libraries(processing_data)
+
 add_executable(socket_app socket/socket_demo.cpp)
+add_executable(send_request_app request/send_request_demo.cpp)
+add_executable(receive_request_app request/receive_request_demo.cpp)
+add_executable(processing_app processing/processing_demo.cpp)
+
 target_link_libraries(socket_app PRIVATE socket_data)
-#target_link_libraries(naive_bayes_app PRIVATE models_bayesian core_data)
-#target_link_libraries(knn_app PRIVATE models_knn core_data)
+target_link_libraries(send_request_app PRIVATE request_data socket_data)
+target_link_libraries(receive_request_app PRIVATE request_data socket_data)
+target_link_libraries(processing_app PRIVATE processing_data)

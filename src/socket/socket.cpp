@@ -4,21 +4,10 @@
 #include <sys/socket.h> // For socket functions
 #include <netdb.h>      // For getaddrinfo
 #include <unistd.h>     // For close
-                  
-/*
 
-           struct addrinfo {
-               int              ai_flags;
-               int              ai_family;
-               int              ai_socktype;
-               int              ai_protocol;
-               socklen_t        ai_addrlen;
-               struct sockaddr *ai_addr;
-               char            *ai_canonname;
-               struct addrinfo *ai_next;
-           };
-*/
-int createConnection(const std::string& hostname, int port) {
+using std::string;
+
+int createConnection(const string& hostname, int port) {
     // Step 1: Set up the address info structure
     struct addrinfo hints, *servinfo, *p;
     int rv;
@@ -28,7 +17,7 @@ int createConnection(const std::string& hostname, int port) {
     hints.ai_socktype = SOCK_STREAM; // TCP stream sockets or SOCK_DGRAM for Datagram
     
     // Convert port to string for getaddrinfo
-    std::string portStr = std::to_string(port);
+    string portStr = std::to_string(port);
     
     // Get address information
     if ((rv = getaddrinfo(hostname.c_str(), portStr.c_str(), &hints, &servinfo)) != 0) {
@@ -65,23 +54,4 @@ int createConnection(const std::string& hostname, int port) {
     freeaddrinfo(servinfo);
     
     return sockfd; // Return the socket file descriptor
-}
-
-int main() {
-    std::string hostname = "example.com";
-    int port = 80;
-    
-    std::cout << "Connecting to " << hostname << ":" << port << std::endl;
-    
-    int sockfd = createConnection(hostname, port);
-    if (sockfd == -1) {
-        std::cerr << "Connection failed" << std::endl;
-        return 1;
-    }
-    
-    std::cout << "Connected successfully! Socket descriptor: " << sockfd << std::endl;
-    
-    // Don't forget to close the socket when done
-    close(sockfd);
-  return 0;
 }
